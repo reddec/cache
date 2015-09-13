@@ -34,6 +34,9 @@ func (cache *Cache) Put(value interface{}, ttl time.Duration) string {
 		value: value,
 		owner: cache,
 		timer: time.NewTicker(ttl)}
+	cache.lock.Lock()
+	cache.data[key] = it
+	cache.lock.Unlock()
 	go func() {
 		defer it.timer.Stop()
 		<-it.timer.C
@@ -41,9 +44,6 @@ func (cache *Cache) Put(value interface{}, ttl time.Duration) string {
 			it.owner.Pull(key)
 		}
 	}()
-	cache.lock.Lock()
-	cache.data[key] = it
-	cache.lock.Unlock()
 	return key
 }
 
