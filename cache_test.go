@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"log"
 	"testing"
 	"time"
 )
@@ -24,5 +25,21 @@ func TestExpired(t *testing.T) {
 	_, ok := c.Pull(k)
 	if ok {
 		t.Fatal("Must not exists")
+	}
+}
+
+func ExampleCache_Put() {
+	cache := NewCache()
+	key := cache.Put(1234, 1*time.Second)
+	log.Println("Generated key:", key)
+}
+
+func ExampleCache_Pull() {
+	cache := NewCache()
+	key := "key1"
+	if value, ok := cache.Pull(key); ok {
+		log.Println(key, "=", value)
+	} else {
+		log.Println("Key", key, "is not exists")
 	}
 }
