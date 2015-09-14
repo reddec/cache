@@ -47,6 +47,14 @@ func (cache *Cache) Put(value interface{}, ttl time.Duration) string {
 	return key
 }
 
+//Has a key in cache
+func (cache *Cache) Has(key string) bool {
+	cache.lock.RLock()
+	defer cache.lock.RUnlock()
+	_, ok := cache.data[key]
+	return ok
+}
+
 //Pull key from cache and remove it if it not already expired.
 //Returns value and status
 func (cache *Cache) Pull(key string) (interface{}, bool) {
